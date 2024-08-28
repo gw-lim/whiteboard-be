@@ -2,6 +2,7 @@ import { prisma } from '../app.js';
 import { assert } from 'superstruct';
 import { CreateUser } from '../structs/user.js';
 import bcrypt from 'bcrypt';
+import { generateToken } from '../middlewares/token.js';
 
 const SALT = 10;
 
@@ -25,15 +26,18 @@ export const signInUser = async (req, res, next) => {
 
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
-      return res.status(404).json({ message: '존재히지 않는 닉네임입니다.' });
+      res.status(404).json({ message: '존재히지 않는 닉네임입니다.' });
+      return;
     }
 
     const matchPassword = await bcrypt.compare(password, user.password);
     if (!matchPassword) {
-      return res.status(400).json({ message: '비밀번호가 틀렸습니다.' });
+      res.status(400).json({ message: '비밀번호가 틀렸습니다.' });
+      return;
     }
 
-    res.status(201).send(user);
+    const accessToken = generateToken(user.id);
+    res.status(201).json({ accessToken });
   } catch (e) {
     console.error(e);
     next(e);
