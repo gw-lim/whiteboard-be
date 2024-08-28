@@ -13,6 +13,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  PROFESSOR
+  STUDENT
+}
+
 model User {
-  id String @id @default(uuid())
+  id                String   @id @default(uuid())
+  username          String   @unique
+  password          String
+  name              String
+  role              Role
+  studentId         Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  createdCourses    Course[] @relation("professor")
+  registeredCourses Course[]
+}
+
+model Course {
+  id              String   @id @default(uuid())
+  name            String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  professor       User     @relation(fields: [userId], references: [id], name: "professor")
+  userId          String
+  registeredUsers User[]
+  posts           Post[]
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  String
 }
