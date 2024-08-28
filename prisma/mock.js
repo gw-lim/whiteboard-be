@@ -17,7 +17,7 @@ export const STUDENTS = [
     password: 'asdf1234',
     name: '임건우',
     role: 'STUDENT',
-    studentId: 2021320000,
+    studentId: '2021320000',
     createdAt: '2024-07-16T09:00:00Z',
     updatedAt: '2024-07-16T09:00:00Z',
     registeredCourses: {
