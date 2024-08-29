@@ -78,8 +78,8 @@ export const createCourse = async (req, res, next) => {
 
 export const registerCourse = async (req, res, next) => {
   try {
-    const { id: courseId } = req.query;
     const userId = res.locals.id;
+    const { id: courseId } = req.query;
 
     const { role } = await prisma.user.findUniqueOrThrow({
       where: { id: userId },
@@ -103,6 +103,36 @@ export const registerCourse = async (req, res, next) => {
       },
     });
     res.json({ registeredCourses });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+export const getStudents = async (req, res, next) => {
+  try {
+    const userId = res.locals.id;
+    const { id: courseId } = req.params;
+
+    const { role } = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+    if (role !== 'PROFESSOR') {
+      res.status(403).json({ message: '권한이 없는 계정입니다.' });
+    }
+
+    const { registeredUsers } = await prisma.course.findUniqueOrThrow({
+      where: { id: courseId },
+      select: {
+        registeredUsers: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    res.json({ registeredUsers });
   } catch (e) {
     console.error(e);
     next(e);
