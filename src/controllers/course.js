@@ -27,6 +27,31 @@ export const getCourses = async (req, res, next) => {
   }
 };
 
+export const getCourse = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const course = await prisma.course.findUniqueOrThrow({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+        professor: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    res.json({ course });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
 export const createCourse = async (req, res, next) => {
   try {
     const id = res.locals.id;
