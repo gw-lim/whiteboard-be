@@ -1,6 +1,20 @@
 import { prisma } from '../app.js';
 
-export const createPost = async (req, res, send) => {
+export const getPosts = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const posts = await prisma.post.findMany({
+      where: { courseId: id },
+      select: { id: true, content: true, createdAt: true, updatedAt: true },
+    });
+    res.json(posts);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+export const createPost = async (req, res, next) => {
   try {
     const userId = res.locals.id;
     const { id: courseId } = req.params;
