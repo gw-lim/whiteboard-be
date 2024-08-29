@@ -49,3 +49,28 @@ export const createPost = async (req, res, next) => {
     next(e);
   }
 };
+
+export const removePost = async (req, res, next) => {
+  try {
+    const userId = res.locals.id;
+    const { id: postId } = req.params;
+
+    const { role } = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+    if (role !== 'PROFESSOR') {
+      res.status(403).json({ message: '권한이 없는 계정입니다.' });
+      return;
+    }
+
+    await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+    res.send(200);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
