@@ -24,7 +24,8 @@ export const getCourses = async (req, res, next) => {
     const { role, createdCourses, registeredCourses } =
       await prisma.user.findUniqueOrThrow({
         where: { id },
-        include: {
+        select: {
+          role: true,
           createdCourses: {
             select: {
               id: true,
@@ -50,6 +51,33 @@ export const getCourses = async (req, res, next) => {
     } else {
       res.json({ registeredCourses });
     }
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
+
+export const getPosts = async (req, res, next) => {
+  try {
+    const id = res.locals.id;
+    const { role, createdCourses, registeredCourses } =
+      await prisma.user.findUniqueOrThrow({
+        where: { id },
+        select: {
+          role: true,
+          createdCourses: { select: { posts: true } },
+          registeredCourses: { select: { posts: true } },
+        },
+      });
+
+    const posts = (role === 'PROFESSOR' ? createdCourses : registeredCourses)
+      .map((courses) => {
+        return courses.posts;
+      })
+      .flat()
+      .sort((a, b) => b.createdAt - a.createdAt);
+
+    res.json({ posts });
   } catch (e) {
     console.error(e);
     next(e);
