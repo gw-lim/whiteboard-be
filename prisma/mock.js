@@ -1,8 +1,8 @@
 export const PROFESSORS = [
   {
     id: 'b8f11e76-0a9e-4b3f-bccf-8d9b4fbf331e',
-    username: 'test',
-    password: 'asdf1234',
+    username: 'professor',
+    password: '$2b$10$44/nnASWSbf57EBbEYz7AOEMZ3lUkiSB.WEbq6E449VOv5D9pJm4C',
     name: '홍길동',
     role: 'PROFESSOR',
     createdAt: '2024-07-16T09:00:00Z',
@@ -13,8 +13,8 @@ export const PROFESSORS = [
 export const STUDENTS = [
   {
     id: '6c3a18b0-11c5-4d97-9019-9ebe3c4d1317',
-    username: 'test2',
-    password: 'asdf1234',
+    username: 'student',
+    password: '$2b$10$vXrg9lc1Z.D0rsycZGZ1nuJzWHUENadkWcKdbb5Fsw3klL0MfwVka',
     name: '임건우',
     role: 'STUDENT',
     studentId: '2021320000',

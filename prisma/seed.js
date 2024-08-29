@@ -9,7 +9,7 @@ async function main() {
   await prisma.course.deleteMany();
   await prisma.user.deleteMany();
 
-  // 목 데이터 삽입
+  // // 목 데이터 삽입
   await Promise.all(
     PROFESSORS.map(async (professor) => {
       await prisma.user.create({ data: professor });
