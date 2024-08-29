@@ -138,3 +138,36 @@ export const getStudents = async (req, res, next) => {
     next(e);
   }
 };
+
+export const removeStudent = async (req, res, next) => {
+  try {
+    const userId = res.locals.id;
+    const { id: courseId } = req.params;
+    const { id: studentId } = req.query;
+
+    const { role } = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+    if (role !== 'PROFESSOR') {
+      res.status(403).json({ message: '권한이 없는 계정입니다.' });
+    }
+
+    const { registeredUsers } = await prisma.course.update({
+      where: { id: courseId },
+      data: {
+        registeredUsers: {
+          disconnect: {
+            id: studentId,
+          },
+        },
+      },
+      include: {
+        registeredUsers: true,
+      },
+    });
+    res.json({ registeredUsers });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};

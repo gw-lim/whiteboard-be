@@ -6,14 +6,17 @@ import {
   getCourses,
   getStudents,
   registerCourse,
+  removeStudent,
 } from '../controllers/course.js';
 
 const courseRouter = Router();
 
-courseRouter.get('/', getCourses);
+courseRouter.route('/').get(getCourses).post(verifyToken, createCourse);
 courseRouter.get('/:id', getCourse);
-courseRouter.get('/:id/students', verifyToken, getStudents);
-courseRouter.post('/', verifyToken, createCourse);
+courseRouter
+  .route('/:id/students')
+  .get(verifyToken, getStudents)
+  .delete(verifyToken, removeStudent);
 courseRouter.post('/register', verifyToken, registerCourse);
 
 export default courseRouter;
