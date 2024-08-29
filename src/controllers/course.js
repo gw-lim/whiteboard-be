@@ -50,3 +50,36 @@ export const createCourse = async (req, res, next) => {
     next(e);
   }
 };
+
+export const registerCourse = async (req, res, next) => {
+  try {
+    const { id: courseId } = req.query;
+    const userId = res.locals.id;
+
+    const { role } = await prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+    });
+    if (role === 'PROFESSOR') {
+      res.status(403).json({ message: '학생만 수강신청을 할 수 있습니다.' });
+      return;
+    }
+
+    const { registeredCourses } = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        registeredCourses: {
+          connect: {
+            id: courseId,
+          },
+        },
+      },
+      include: {
+        registeredCourses: true,
+      },
+    });
+    res.json({ registeredCourses });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+};
