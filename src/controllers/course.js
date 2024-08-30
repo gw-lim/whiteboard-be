@@ -63,13 +63,13 @@ export const createCourse = async (req, res, next) => {
       return;
     }
 
-    const course = await prisma.course.create({
+    await prisma.course.create({
       data: {
         name: req.body.name,
         professorId: id,
       },
     });
-    res.json(course);
+    res.sendStatus(201);
   } catch (e) {
     console.error(e);
     next(e);
@@ -79,7 +79,7 @@ export const createCourse = async (req, res, next) => {
 export const registerCourse = async (req, res, next) => {
   try {
     const userId = res.locals.id;
-    const { id: courseId } = req.query;
+    const { id: courseId } = req.body;
 
     const { role } = await prisma.user.findUniqueOrThrow({
       where: { id: userId },
@@ -89,7 +89,7 @@ export const registerCourse = async (req, res, next) => {
       return;
     }
 
-    const { registeredCourses } = await prisma.user.update({
+    await prisma.user.update({
       where: { id: userId },
       data: {
         registeredCourses: {
@@ -102,7 +102,7 @@ export const registerCourse = async (req, res, next) => {
         registeredCourses: true,
       },
     });
-    res.send(registeredCourses);
+    res.sendStatus(200);
   } catch (e) {
     console.error(e);
     next(e);
@@ -153,7 +153,7 @@ export const removeStudent = async (req, res, next) => {
       res.status(403).json({ message: '권한이 없는 계정입니다.' });
     }
 
-    const { registeredUsers } = await prisma.course.update({
+    await prisma.course.update({
       where: { id: courseId },
       data: {
         registeredUsers: {
@@ -172,7 +172,7 @@ export const removeStudent = async (req, res, next) => {
         },
       },
     });
-    res.send(registeredUsers);
+    res.sendStatus(200);
   } catch (e) {
     console.error(e);
     next(e);

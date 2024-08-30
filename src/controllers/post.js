@@ -27,7 +27,7 @@ export const createPost = async (req, res, next) => {
       return;
     }
 
-    const course = await prisma.post.create({
+    await prisma.post.create({
       data: {
         content: req.body.content,
         course: {
@@ -43,7 +43,7 @@ export const createPost = async (req, res, next) => {
         updatedAt: true,
       },
     });
-    res.json(course);
+    res.sendStatus(201);
   } catch (e) {
     console.error(e);
     next(e);

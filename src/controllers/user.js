@@ -32,6 +32,7 @@ export const getCourses = async (req, res, next) => {
               name: true,
               createdAt: true,
               updatedAt: true,
+              professor: { select: { id: true, name: true } },
             },
           },
           registeredCourses: {
@@ -47,9 +48,9 @@ export const getCourses = async (req, res, next) => {
       });
 
     if (role === 'PROFESSOR') {
-      res.json({ createdCourses });
+      res.send(createdCourses);
     } else {
-      res.json({ registeredCourses });
+      res.send(registeredCourses);
     }
   } catch (e) {
     console.error(e);
@@ -99,7 +100,7 @@ export const getPosts = async (req, res, next) => {
       .flat()
       .sort((a, b) => b.createdAt - a.createdAt);
 
-    res.json({ posts });
+    res.send(posts);
   } catch (e) {
     console.error(e);
     next(e);
