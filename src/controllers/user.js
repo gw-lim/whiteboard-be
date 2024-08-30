@@ -8,9 +8,9 @@ export const getUser = async (req, res, next) => {
     });
 
     if (role === 'PROFESSOR') {
-      res.json({ name });
+      res.json({ id, role, name });
     } else {
-      res.json({ name, studentId });
+      res.json({ id, role, name, studentId });
     }
   } catch (e) {
     console.error(e);
@@ -65,8 +65,30 @@ export const getPosts = async (req, res, next) => {
         where: { id },
         select: {
           role: true,
-          createdCourses: { select: { posts: true } },
-          registeredCourses: { select: { posts: true } },
+          createdCourses: {
+            select: {
+              posts: {
+                select: {
+                  id: true,
+                  content: true,
+                  createdAt: true,
+                  updatedAt: true,
+                },
+              },
+            },
+          },
+          registeredCourses: {
+            select: {
+              posts: {
+                select: {
+                  id: true,
+                  content: true,
+                  createdAt: true,
+                  updatedAt: true,
+                },
+              },
+            },
+          },
         },
       });
 

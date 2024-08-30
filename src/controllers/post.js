@@ -7,7 +7,7 @@ export const getPosts = async (req, res, next) => {
       where: { courseId: id },
       select: { id: true, content: true, createdAt: true, updatedAt: true },
     });
-    res.json(posts);
+    res.send(posts);
   } catch (e) {
     console.error(e);
     next(e);
@@ -68,7 +68,7 @@ export const removePost = async (req, res, next) => {
         id: postId,
       },
     });
-    res.send(200);
+    res.sendStatus(200);
   } catch (e) {
     console.error(e);
     next(e);

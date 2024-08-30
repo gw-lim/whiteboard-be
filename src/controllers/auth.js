@@ -11,11 +11,11 @@ export const createUser = async (req, res, next) => {
     assert(req.body, CreateUser);
 
     const hashedPassword = await bcrypt.hash(req.body.password, SALT);
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: { ...req.body, password: hashedPassword },
     });
 
-    res.status(201).send(user);
+    res.sendStatus(201);
   } catch (e) {
     console.error(e);
     next(e);
@@ -51,10 +51,10 @@ export const checkUsernameDuplicate = async (req, res, next) => {
     const { username } = req.body;
     const user = await prisma.user.findUnique({ where: { username } });
     if (user) {
-      res.status(400).send({ message: '존재하는 아이디입니다.' });
+      res.status(400).json({ message: '존재하는 아이디입니다.' });
       return;
     }
-    res.status(200).send({ message: '사용 가능한 아이디입니다.' });
+    res.status(200).json({ message: '사용 가능한 아이디입니다.' });
   } catch (e) {
     console.error(e);
     next(e);

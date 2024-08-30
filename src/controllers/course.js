@@ -20,7 +20,7 @@ export const getCourses = async (req, res, next) => {
         },
       },
     });
-    res.json({ courses });
+    res.send(courses);
   } catch (e) {
     console.error(e);
     next(e);
@@ -45,7 +45,7 @@ export const getCourse = async (req, res, next) => {
         },
       },
     });
-    res.json({ course });
+    res.json(course);
   } catch (e) {
     console.error(e);
     next(e);
@@ -69,7 +69,7 @@ export const createCourse = async (req, res, next) => {
         professorId: id,
       },
     });
-    res.json({ course });
+    res.json(course);
   } catch (e) {
     console.error(e);
     next(e);
@@ -102,7 +102,7 @@ export const registerCourse = async (req, res, next) => {
         registeredCourses: true,
       },
     });
-    res.json({ registeredCourses });
+    res.send(registeredCourses);
   } catch (e) {
     console.error(e);
     next(e);
@@ -128,11 +128,12 @@ export const getStudents = async (req, res, next) => {
           select: {
             id: true,
             name: true,
+            studentId: true,
           },
         },
       },
     });
-    res.json({ registeredUsers });
+    res.send(registeredUsers);
   } catch (e) {
     console.error(e);
     next(e);
@@ -162,10 +163,16 @@ export const removeStudent = async (req, res, next) => {
         },
       },
       include: {
-        registeredUsers: true,
+        registeredUsers: {
+          select: {
+            id: true,
+            name: true,
+            studentId: true,
+          },
+        },
       },
     });
-    res.json({ registeredUsers });
+    res.send(registeredUsers);
   } catch (e) {
     console.error(e);
     next(e);
