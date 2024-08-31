@@ -26,7 +26,15 @@ export const signInUser = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        studentId: true,
+      },
+    });
     if (!user) {
       res.status(404).json({ message: '존재하지 않는 아이디입니다.' });
       return;
@@ -39,7 +47,7 @@ export const signInUser = async (req, res, next) => {
     }
 
     const accessToken = generateToken(user.id);
-    res.status(201).json({ accessToken });
+    res.status(201).json({ accessToken, user });
   } catch (e) {
     console.error(e);
     next(e);
