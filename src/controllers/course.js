@@ -1,4 +1,5 @@
 import { prisma } from '../app.js';
+import { COURSE_RES, STUDENT_RES } from '../constants.js';
 
 export const getCourses = async (req, res, next) => {
   try {
@@ -7,18 +8,7 @@ export const getCourses = async (req, res, next) => {
     const courses = await prisma.course.findMany({
       skip: skip || undefined,
       take: Number(limit) || undefined,
-      select: {
-        id: true,
-        name: true,
-        createdAt: true,
-        updatedAt: true,
-        professor: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      ...COURSE_RES,
     });
     res.send(courses);
   } catch (e) {
@@ -32,18 +22,7 @@ export const getCourse = async (req, res, next) => {
     const { id } = req.params;
     const course = await prisma.course.findUniqueOrThrow({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        createdAt: true,
-        updatedAt: true,
-        professor: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      ...COURSE_RES,
     });
     res.json(course);
   } catch (e) {
@@ -98,9 +77,6 @@ export const registerCourse = async (req, res, next) => {
           },
         },
       },
-      include: {
-        registeredCourses: true,
-      },
     });
     res.sendStatus(200);
   } catch (e) {
@@ -124,13 +100,7 @@ export const getStudents = async (req, res, next) => {
     const { registeredUsers } = await prisma.course.findUniqueOrThrow({
       where: { id: courseId },
       select: {
-        registeredUsers: {
-          select: {
-            id: true,
-            name: true,
-            studentId: true,
-          },
-        },
+        registeredUsers: STUDENT_RES,
       },
     });
     res.send(registeredUsers);
@@ -159,15 +129,6 @@ export const removeStudent = async (req, res, next) => {
         registeredUsers: {
           disconnect: {
             id: studentId,
-          },
-        },
-      },
-      include: {
-        registeredUsers: {
-          select: {
-            id: true,
-            name: true,
-            studentId: true,
           },
         },
       },

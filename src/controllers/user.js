@@ -1,4 +1,5 @@
 import { prisma } from '../app.js';
+import { COURSE_RES, POST_RES } from '../constants.js';
 
 export const getUser = async (req, res, next) => {
   try {
@@ -26,24 +27,8 @@ export const getCourses = async (req, res, next) => {
         where: { id },
         select: {
           role: true,
-          createdCourses: {
-            select: {
-              id: true,
-              name: true,
-              createdAt: true,
-              updatedAt: true,
-              professor: { select: { id: true, name: true } },
-            },
-          },
-          registeredCourses: {
-            select: {
-              id: true,
-              name: true,
-              createdAt: true,
-              updatedAt: true,
-              professor: { select: { id: true, name: true } },
-            },
-          },
+          createdCourses: COURSE_RES,
+          registeredCourses: COURSE_RES,
         },
       });
 
@@ -61,6 +46,7 @@ export const getCourses = async (req, res, next) => {
 export const getPosts = async (req, res, next) => {
   try {
     const id = res.locals.id;
+
     const { role, createdCourses, registeredCourses } =
       await prisma.user.findUniqueOrThrow({
         where: { id },
@@ -68,26 +54,12 @@ export const getPosts = async (req, res, next) => {
           role: true,
           createdCourses: {
             select: {
-              posts: {
-                select: {
-                  id: true,
-                  content: true,
-                  createdAt: true,
-                  updatedAt: true,
-                },
-              },
+              posts: POST_RES,
             },
           },
           registeredCourses: {
             select: {
-              posts: {
-                select: {
-                  id: true,
-                  content: true,
-                  createdAt: true,
-                  updatedAt: true,
-                },
-              },
+              posts: POST_RES,
             },
           },
         },

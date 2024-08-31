@@ -1,11 +1,12 @@
 import { prisma } from '../app.js';
+import { POST_RES } from '../constants.js';
 
 export const getPosts = async (req, res, next) => {
   try {
     const { id } = req.params;
     const posts = await prisma.post.findMany({
       where: { courseId: id },
-      select: { id: true, content: true, createdAt: true, updatedAt: true },
+      ...POST_RES,
     });
     res.send(posts);
   } catch (e) {
@@ -35,12 +36,6 @@ export const createPost = async (req, res, next) => {
             id: courseId,
           },
         },
-      },
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        updatedAt: true,
       },
     });
     res.sendStatus(201);
